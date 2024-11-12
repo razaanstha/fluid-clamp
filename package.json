@@ -1,6 +1,6 @@
 {
   "name": "fluid-clamp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "PostCSS plugin for fluid typography with first-class Tailwind CSS support",
   "scripts": {
     "build": "tsup",
