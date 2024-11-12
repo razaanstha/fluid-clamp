@@ -17,10 +17,17 @@ A PostCSS plugin that makes fluid typography simple. Perfect for Tailwind CSS ar
 ## Installation
 
 ```bash
-npm install fluid-clamp
-yarn add fluid-clamp
-pnpm add fluid-clamp
-bun add fluid-clamp
+# npm
+npm install -D fluid-clamp
+
+# yarn
+yarn add -D fluid-clamp
+
+# pnpm
+pnpm add -D fluid-clamp
+
+# bun
+bun add -D fluid-clamp
 ```
 
 ## Quick Start
