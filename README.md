@@ -231,6 +231,34 @@ Requires browsers that support:
 - `clamp()` - [Can I use clamp()](https://caniuse.com/css-clamp)
 - `calc()` - [Can I use calc()](https://caniuse.com/calc)
 
+## Development
+
+### Test Coverage
+
+The plugin can be throughly tested by running `bun run test`:
+
+```bash
+$ bun run test
+ PASS  src/__tests__/index.test.ts
+  Fluid Clamp Test
+    ✓ should process @fluid in clamp function with default options (3 ms)
+    ✓ should handle @fluid with two arguments (custom minWidth and maxWidth) (1 ms)
+    ✓ should handle @fluid with three arguments (custom minWidth, maxWidth, and baseFontSize) (1 ms)
+    ✓ should handle pixel values with @fluid()
+    ✓ should handle invalid input gracefully (non-numerical arguments)
+    ✓ should handle incorrect number of arguments in @fluid (e.g., one argument) (1 ms)
+    ✓ should handle incorrect number of arguments in @fluid (e.g., four arguments)
+    ✓ should replace multiple @fluid instances correctly (1 ms)
+    ✓ should handle edge case with minScreen equals maxScreen (1 ms)
+    ✓ should ignore declarations without @fluid
+
+Test Suites: 1 passed, 1 total
+Tests:       10 passed, 10 total
+Snapshots:   0 total
+Time:        1.26 s
+```
+
+
 ## License
 
 MIT © [Rajan Shrestha](https://github.com/razaanstha)

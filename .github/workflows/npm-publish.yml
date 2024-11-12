@@ -1,4 +1,4 @@
-name: Publish rizzm
+name: Publish to NPM
 on:
   release:
     types: [published]
