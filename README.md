@@ -9,7 +9,7 @@ Transform complex fluid typography into simple, elegant code
 </h1>
 
 <!-- Instead of mind-bending calculations -->
-<h1 class="text-[clamp(2rem,calc(8.72727px + 2.27273vw),4rem)]">
+<h1 class="text-[clamp(2rem,calc(8.72727px+2.27273vw),4rem)]">
   Complex, Error-Prone Typography
 </h1>
 ```
@@ -182,17 +182,17 @@ module.exports = {
 ```css
 /* iPhone SE → iPad Mini */
 .mobile {
-  font-size: clamp(1rem, @fluid(375, 768), 1.5rem);
+  font-size: clamp(1rem,@fluid(375,768),1.5rem);
 }
 
 /* iPad Mini → MacBook Air */
 .tablet {
-  font-size: clamp(1.5rem, @fluid(768, 1366), 2rem);
+  font-size: clamp(1.5rem,@fluid(768,1366),2rem);
 }
 
 /* MacBook Air → 4K Displays */
 .desktop {
-  font-size: clamp(2rem, @fluid(1366, 2560), 4rem);
+  font-size: clamp(2rem,@fluid(1366,2560),4rem);
 }
 ```
 

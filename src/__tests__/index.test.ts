@@ -1,5 +1,5 @@
 import postcss from "postcss";
-import fluidClamp from "../../dist/index";
+import fluidClamp from "../index";
 import { describe, it, expect, beforeEach, afterEach } from "@jest/globals";
 
 describe("Fluid Clamp Test", () => {

@@ -5,12 +5,44 @@ import valueParser, {
 } from "postcss-value-parser";
 
 /**
+ * Interface for plugin options.
+ */
+interface FluidClampOptions {
+  /**
+   * Enable or disable warnings.
+   * @default false
+   */
+  warnings?: boolean;
+
+  /**
+   * Minimum screen width in pixels for fluid calculations.
+   * @default 768
+   */
+  minWidth?: number;
+
+  /**
+   * Maximum screen width in pixels for fluid calculations.
+   * @default 1536
+   */
+  maxWidth?: number;
+
+  /**
+   * Base font size in pixels.
+   * @default 16
+   */
+  baseFontSize?: number;
+}
+
+/**
  * Fluid Clamp Plugin
  * Replaces @fluid(...) with calc(...) in clamp() functions.
  */
-const fluidClamp = (opts = {}): Plugin => {
+const fluidClamp = (opts: FluidClampOptions = {}): Plugin => {
   const options = {
     warnings: false,
+    minWidth: 768,
+    maxWidth: 1536,
+    baseFontSize: 16,
     ...opts,
   };
 
@@ -26,7 +58,7 @@ const fluidClamp = (opts = {}): Plugin => {
           return;
         }
 
-        const clampFunction = node;
+        const clampFunction = node as FunctionNode;
 
         // Extract clamp arguments, ignoring dividers (commas)
         const clampArgs = clampFunction.nodes.filter(
@@ -101,10 +133,8 @@ const fluidClamp = (opts = {}): Plugin => {
           return;
         }
 
-        // Set default values
-        let minWidth = 768;
-        let maxWidth = 1536;
-        let baseFontSize = 16;
+        // Destructure options for easier access
+        let { minWidth, maxWidth, baseFontSize } = options;
 
         if (fluidArgs.length === 2) {
           minWidth = fluidArgs[0];
@@ -134,11 +164,12 @@ const fluidClamp = (opts = {}): Plugin => {
           // Replace @fluid(...) with baseFontSize px
           const fluidValue = `${baseFontSize}px`;
 
-          // Replace the @fluid(...) function node with the fluidValue
-          // Change the node to 'word' type and set its value
-          (fluidFunctionNode as any).type = "word"; // Type assertion
-          fluidFunctionNode.value = fluidValue;
-          delete (fluidFunctionNode as any).nodes;
+          // Replace only the @fluid(...) function node with the fluidValue
+          Object.assign(fluidFunctionNode, {
+            type: "word",
+            value: fluidValue,
+            nodes: undefined,
+          });
 
           if (options.warnings) {
             decl.warn(
@@ -160,10 +191,12 @@ const fluidClamp = (opts = {}): Plugin => {
 
         const fluidValue = `calc(${interceptPx}px + ${slopeVw}vw)`;
 
-        // Replace the @fluid(...) function node with the fluidValue
-        (fluidFunctionNode as any).type = "word"; // Type assertion
-        fluidFunctionNode.value = fluidValue;
-        delete (fluidFunctionNode as any).nodes;
+        // Replace only the @fluid(...) function node with the fluidValue
+        Object.assign(fluidFunctionNode, {
+          type: "word",
+          value: fluidValue,
+          nodes: undefined,
+        });
 
         hasChanges = true;
       });
@@ -197,13 +230,15 @@ function parseSize(value: string): number | null {
       return num;
     case "rem":
     case "em":
-      return num * 16; // Assuming 1rem = 16px
+      return num * 16; // Assuming 1rem = 16px and 1em = 16px
     default:
       return null;
   }
 }
 
+// Essential PostCSS properties for plugin identification
 fluidClamp.postcss = true;
 fluidClamp.postcssPlugin = "fluid-clamp";
 
+// EJS export for ES6 modules
 export default fluidClamp;
