@@ -1,18 +1,29 @@
 # fluid-clamp
 
-A PostCSS plugin that makes fluid typography simple. Perfect for Tailwind CSS arbitrary values.
+Transform complex fluid typography into simple, elegant code 
 
 ```html
-<!-- Write this -->
+<!-- Write beautiful, intuitive code -->
 <h1 class="text-[clamp(2rem,@fluid(320,1024),4rem)]">
-  Fluid Typography
+  Clean, Maintainable Typography
 </h1>
 
-<!-- Instead of this -->
-<h1 class="text-[clamp(2rem,calc(8.72727px+2.27273vw),4rem)]">
-  Fluid Typography
+<!-- Instead of mind-bending calculations -->
+<h1 class="text-[clamp(2rem,calc(8.72727px + 2.27273vw),4rem)]">
+  Complex, Error-Prone Typography
 </h1>
 ```
+
+<!-- 
+  What @fluid() handles for you:
+  • Precise fluid scaling
+  • Viewport-based calculations
+  • Perfect typography at any screen size
+-->
+
+## What is Fluid Typography?
+
+Fluid typography creates smooth, responsive text that automatically scales based on viewport width. Instead of using fixed breakpoints, it provides seamless scaling that maintains perfect typography at any screen size.
 
 ## Installation
 
@@ -36,8 +47,15 @@ bun add -D fluid-clamp
 // postcss.config.js
 module.exports = {
   plugins: [
+    require('postcss-import'),    // optional
+    require('postcss-nested'),    // optional
     require('tailwindcss'),
-    require('fluid-clamp'),
+    require('fluid-clamp')({
+      // These are the default values
+      minWidth: 768,    // default minimum viewport width
+      maxWidth: 1536,   // default maximum viewport width
+      baseFontSize: 16  // default base font size
+    }),
     require('autoprefixer')
   ]
 }
@@ -48,19 +66,24 @@ module.exports = {
 ### Basic Syntax
 ```css
 /* Default viewport range (768px - 1536px) */
-font-size: clamp(1rem, @fluid(), 2rem);
+font-size: clamp(1rem,@fluid(),2rem);
 
 /* Custom viewport range (320px - 1024px) */
-font-size: clamp(1rem, @fluid(320, 1024), 2rem);
+font-size: clamp(1rem,@fluid(320,1024),2rem);
 
 /* With custom base font size (16px) */
-font-size: clamp(1rem, @fluid(320, 1024, 16), 2rem);
+font-size: clamp(1rem,@fluid(320,1024,16),2rem);
 ```
 
 ### With Tailwind CSS
 
 ```html
-<!-- Typography -->
+<!-- Typography with default range (768px - 1536px) -->
+<h1 class="text-[clamp(2rem,@fluid(),4rem)]">
+  Fluid Header
+</h1>
+
+<!-- Typography with custom range -->
 <h1 class="text-[clamp(2rem,@fluid(320,1024),4rem)]">
   Fluid Header
 </h1>
@@ -71,7 +94,7 @@ font-size: clamp(1rem, @fluid(320, 1024, 16), 2rem);
 </div>
 
 <!-- Line Height -->
-<p class="text-[clamp(1rem,@fluid(),2rem)]/[1.5]">
+<p class="leading-[1.5] text-[clamp(1rem,@fluid(),2rem)]">
   Fluid Text
 </p>
 
@@ -182,25 +205,61 @@ module.exports = {
 | Compact | 375px | 1366px | Web applications |
 | Expansive | 375px | 2560px | Large-screen experiences |
 
+## Browser Support
+
+Works in all modern browsers that support CSS `clamp()`:
+- Chrome 79+
+- Firefox 75+
+- Safari 13.1+
+- Edge 79+
+
 ## Framework Integration
 
 ### Next.js
 ```js
 // postcss.config.js
 module.exports = {
-  plugins: ['tailwindcss', 'fluid-clamp', 'autoprefixer']
+  plugins: [
+    require('postcss-import'),    // optional
+    require('postcss-nested'),    // optional
+    require('tailwindcss'),
+    require('fluid-clamp')({
+      // Using default values
+      minWidth: 768,     // tablet breakpoint
+      maxWidth: 1536,    // desktop breakpoint
+      baseFontSize: 16   // browser default
+    }),
+    require('autoprefixer')
+  ]
 }
 ```
 
 ### Vite
 ```js
 // vite.config.js
+// If using TypeScript, add to your dependencies first:
+// npm install -D fluid-clamp
+
+// Using ESM import
 import fluidClamp from 'fluid-clamp'
+// OR using CommonJS require (note the .default)
+const fluidClamp = require('fluid-clamp').default
 
 export default {
   css: {
     postcss: {
-      plugins: [fluidClamp()]
+      plugins: [
+        require('postcss-import'),    // optional
+        require('postcss-nested'),    // optional
+        require('tailwindcss'),
+        fluidClamp({
+          // Using default values
+          minWidth: 768,     // tablet breakpoint
+          maxWidth: 1536,    // desktop breakpoint
+          baseFontSize: 16   // browser default
+        }),
+        require('autoprefixer')
+      ]
     }
   }
 }
@@ -209,21 +268,66 @@ export default {
 ### Webpack
 ```js
 // webpack.config.js
-{
-  loader: 'postcss-loader',
-  options: {
-    postcssOptions: {
-      plugins: [require('fluid-clamp')]
-    }
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  require('postcss-import'),    // optional
+                  require('postcss-nested'),    // optional
+                  require('tailwindcss'),
+                  require('fluid-clamp')({
+                    // Using default values
+                    minWidth: 768,     // tablet breakpoint
+                    maxWidth: 1536,    // desktop breakpoint
+                    baseFontSize: 16   // browser default
+                  }),
+                  require('autoprefixer')
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ]
   }
 }
+```
+
+### Laravel Mix
+```js
+// webpack.mix.js
+mix.postCss("src/app.css", "build/", [
+  require('postcss-import'),    // optional
+  require('postcss-nested'),    // optional
+  require('tailwindcss'),
+  require('fluid-clamp')({
+    // Using default values
+    minWidth: 768,     // tablet breakpoint
+    maxWidth: 1536,    // desktop breakpoint
+    baseFontSize: 16   // browser default
+  }),
+  require('autoprefixer')
+]);
 ```
 
 ## Plugin Options
 
 ```js
 require('fluid-clamp')({
-  warnings: false  // Disable warning messages (default: false)
+  warnings: false,    // Disable warning messages (default: false)
+  minWidth: 768,     // Minimum viewport width in pixels (default: 768)
+  maxWidth: 1536,    // Maximum viewport width in pixels (default: 1536)
+  baseFontSize: 16   // Base font size in pixels (default: 16)
 })
 ```
 
@@ -232,40 +336,38 @@ require('fluid-clamp')({
 - `px` - Pixels
 - `rem` - Root em units
 
-## Browser Support
+## Contributing
 
-Requires browsers that support:
-- `clamp()` - [Can I use clamp()](https://caniuse.com/css-clamp)
-- `calc()` - [Can I use calc()](https://caniuse.com/calc)
+We welcome contributions! Please feel free to submit a Pull Request.
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Development
 
 ### Test Coverage
 
-The plugin can be throughly tested by running `bun run test`:
+The plugin can be thoroughly tested by running `bun run test`:
 
 ```bash
 $ bun run test
  PASS  src/__tests__/index.test.ts
   Fluid Clamp Test
-    ✓ should process @fluid in clamp function with default options (3 ms)
-    ✓ should handle @fluid with two arguments (custom minWidth and maxWidth) (1 ms)
-    ✓ should handle @fluid with three arguments (custom minWidth, maxWidth, and baseFontSize) (1 ms)
+    ✓ should process @fluid in clamp function with default options
+    ✓ should handle @fluid with two arguments (custom minWidth and maxWidth)
+    ✓ should handle @fluid with three arguments (custom minWidth, maxWidth, and baseFontSize)
     ✓ should handle pixel values with @fluid()
     ✓ should handle invalid input gracefully (non-numerical arguments)
-    ✓ should handle incorrect number of arguments in @fluid (e.g., one argument) (1 ms)
+    ✓ should handle incorrect number of arguments in @fluid (e.g., one argument)
     ✓ should handle incorrect number of arguments in @fluid (e.g., four arguments)
-    ✓ should replace multiple @fluid instances correctly (1 ms)
-    ✓ should handle edge case with minScreen equals maxScreen (1 ms)
+    ✓ should replace multiple @fluid instances correctly
+    ✓ should handle edge case with minScreen equals maxScreen
     ✓ should ignore declarations without @fluid
 
 Test Suites: 1 passed, 1 total
 Tests:       10 passed, 10 total
 Snapshots:   0 total
-Time:        1.26 s
 ```
 
-
-## License
-
-MIT © [Rajan Shrestha](https://github.com/razaanstha)
+> Note: This documentation was automatically generated by AI based on the source code and test results of the fluid-clamp plugin.
