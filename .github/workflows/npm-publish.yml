@@ -20,9 +20,6 @@ jobs:
       # Run tests
       - run: npm test
       
-      # Build the package
-      - run: npm run build
-      
       # Publish to npm registry
       - run: npm publish
         env:
